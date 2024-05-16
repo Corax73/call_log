@@ -1,0 +1,7 @@
+parameters:
+    level: 9
+    paths:
+        - src/Controllers
+        - src/Models
+    bootstrapFiles:
+        - config/const.php
