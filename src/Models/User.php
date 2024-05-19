@@ -78,29 +78,16 @@ class User extends AbstractModel
     }
 
     /**
-     * Deletes a user.
-     * @param int $user_id
-     * @return bool
+     * completes user authentication
+     * @return void
      */
-    public function delete(int $user_id): bool
+    public function logout(): void
     {
-        $resp = false;
-        try {
-            $query = 'DELETE FROM `' . $this->table . '` WHERE `id` = :user_id';
-            $params = [
-                ':user_id' => $user_id,
-            ];
-            $stmt = $this->connect->connect(PATH_CONF)->prepare($query);
-            $this->connect->connect(PATH_CONF)->beginTransaction();
-            $stmt->execute($params);
-            $resp = $stmt->rowCount() > 0 ? true : false;
-            $this->connect->connect(PATH_CONF)->commit();
-        } catch (\Exception $e) {
-            if ($this->connect->connect(PATH_CONF)->inTransaction()) {
-                $this->connect->connect(PATH_CONF)->rollback();
-            }
-            throw $e;
-        }
-        return $resp;
+        session_start();
+        session_unset();
+        session_destroy();
+        unset($_SESSION['email']);
+        header("Location: http://localhost:8000");
+        exit();
     }
 }

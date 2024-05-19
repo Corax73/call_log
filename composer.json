@@ -16,7 +16,6 @@
         "phpstan/phpstan": "^1.10"
     },
     "require": {
-        "illuminate/collections": "^11.0",
-        "pecee/simple-router": "5.4.1.7"
+        "illuminate/collections": "^11.0"
     }
 }
