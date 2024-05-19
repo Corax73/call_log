@@ -5,37 +5,34 @@ namespace Models;
 /**
  * @property string $table
  */
-class Call extends AbstractModel
+class Operator extends AbstractModel
 {
-    protected string $table = 'calls';
+    protected string $table = 'operators';
     protected array $fillable = [
-        'user_id',
-        'dialed_user_id',
-        'call_start_time',
-        'call_end_time'
+        'title',
+        'internal_price',
+        'external_price'
     ];
     protected array $guarded = [];
 
     /**
-     * Save call data.
-     * @param int $user_id
-     * @param int $dialed_user_id
-     * @param string $call_start_time
-     * @param string $call_end_time
+     * Save operator data.
+     * @param string $title
+     * @param int $internal_price
+     * @param int $external_price
      * @return bool
      */
-    public function save(int $user_id, int $dialed_user_id, string $call_start_time, string $call_end_time): bool
+    public function save(string $title, int $internal_price, int $external_price): bool
     {
         $resp = false;
         $strFields = implode(', ', $this->fillable);
         if ($strFields) {
             try {
-                $query = 'INSERT INTO `' . $this->table . '` (' . $strFields . ', created_at) VALUES (:user_id, :dialed_user_id, :call_start_time, :call_end_time, :now)';
+                $query = 'INSERT INTO `' . $this->table . '` (' . $strFields . ', created_at) VALUES (:title, :internal_price, :external_price, :now)';
                 $params = [
-                    ':user_id' => $user_id,
-                    ':dialed_user_id' => $dialed_user_id,
-                    ':call_start_time' => $call_start_time,
-                    ':call_end_time' => $call_end_time,
+                    ':title' => $title,
+                    ':internal_price' => $internal_price,
+                    ':external_price' => $external_price,
                     ':now' => date('Y-m-d h:i:s', time())
                 ];
                 $stmt = $this->connect->connect(PATH_CONF)->prepare($query);

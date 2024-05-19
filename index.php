@@ -106,18 +106,29 @@ require 'src/main.php';
                 </thead>
                 <tbody>
                     <?php if ($calls) { ?>
-                        <?php for ($i = 1; $i < count($calls); $i++) { ?>
-                        <tr>
-                            <th scope="row"><?= $i ?></th>
-                            <td><?= $calls[$i]['user'] ?></td>
-                            <td><?= $calls[$i]['dialed_user'] ?></td>
-                            <td><?= $calls[$i]['call_start_time'] ?></td>
-                            <td><?= $calls[$i]['call_end_time'] ?></td>
-                        </tr>
+                        <?php for ($i = 0; $i < count($calls); $i++) { ?>
+                            <tr>
+                                <th scope="row"><?= $i + 1 ?></th>
+                                <td><?= $calls[$i]['user'] ?></td>
+                                <td><?= $calls[$i]['dialed_user'] ?></td>
+                                <td><?= $calls[$i]['call_start_time'] ?></td>
+                                <td><?= $calls[$i]['call_end_time'] ?></td>
+                                <td><?= $calls[$i]['duration'] ?></td>
+                                <td><?= $calls[$i]['call_cost'] ?></td>
+                            </tr>
                         <?php } ?>
                     <?php } ?>
                 </tbody>
             </table>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </nav>
         </div>
     </div>
     <script src="/js/form.js"></script>

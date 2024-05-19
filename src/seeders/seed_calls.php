@@ -1,11 +1,11 @@
 <?php
 
 use Models\Call;
-use Models\User;
+use Models\UserStatements;
 
 $call = new Call();
-$user = new User();
-$usersIds = collect($user->all())->pluck('id')->toArray();
+$userStatement = new UserStatements();
+$usersIds = collect($userStatement->all())->pluck('user_id')->toArray();
 $midIndex = count($usersIds) / 2;
 for($i = 0; $i < $midIndex; $i++) {
     $call_start_time = date('Y-m-d H:i:s');
