@@ -83,4 +83,13 @@ abstract class AbstractModel
         $resp = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $resp ? $resp : [];
     }
+
+    public function getTotal(): int
+    {
+        $query = 'SELECT COUNT(*) FROM `' . $this->table . '`';
+        $stmt = $this->connect->connect(PATH_CONF)->prepare($query);
+        $stmt->execute();
+        $countNum = $stmt->fetchColumn();
+        return $countNum;
+    }
 }

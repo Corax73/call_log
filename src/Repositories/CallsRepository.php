@@ -11,9 +11,9 @@ use Models\UserStatements;
 
 class CallsRepository
 {
-    public function getCallWithCalculatedData(): Collection
+    public function getCallWithCalculatedData(int $perPage = 12, int $offset = 0): Collection
     {
-        $calls = $this->getCallsFromDb();
+        $calls = $this->getCallsFromDb($perPage, $offset);
 
         $allUsersFromCall = $this->getUsersFromCalls($calls);
         $users = $allUsersFromCall['users'];
@@ -55,10 +55,20 @@ class CallsRepository
         return $calls;
     }
 
-    private function getCallsFromDb(): Collection
+    private function getCallsFromDb(int $perPage = 12, int $offset = 0): Collection
     {
         $call = new Call();
-        return collect($call->all());
+        return collect($call->all($perPage, $offset));
+    }
+
+    public function getPagination(): array
+    {
+        $call = new Call();
+        $total = $call->getTotal();
+        return [
+            'total' => $total,
+            'count_pages' => ceil($total / 12)
+        ];
     }
 
     private function getUsersFromCalls(Collection $calls): array

@@ -103,17 +103,23 @@ require 'src/main.php';
                 <?php } ?>
             </tbody>
         </table>
-        <nav aria-label="Page navigation example">
-            <ul class="pagination">
-                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">Next</a></li>
-            </ul>
-        </nav>
+        <?php if (isset($countPages)) { ?>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <?php if (isset($_GET['page']) && $_GET['page'] > 1) { ?>
+                        <li class="page-item"><a class="page-link" href="/?page=<?= $_GET['page'] - 1 ?>">Previous</a></li>
+                    <?php } ?>
+                    <?php for ($i = 1; $i <= $countPages; $i++) { ?>
+                        <li class="page-item"><a class="page-link" href="/?page=<?= $i ?>"><?= $i ?></a></li>
+                    <?php } ?>
+                    <?php if (isset($_GET['page']) && $_GET['page'] < $countPages) { ?>
+                        <li class="page-item"><a class="page-link" href="/?page=<?= $_GET['page'] + 1 ?>">Next</a></li>
+                    <?php } ?>
+                </ul>
+            </nav>
+        <?php } ?>
     </div>
-    <script src="/js/form.js"></script>
+    <script src=" /js/form.js"></script>
 </body>
 
 </html>
