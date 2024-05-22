@@ -91,7 +91,13 @@ require 'src/main.php';
                 <?php if ($calls) { ?>
                     <?php for ($i = 0; $i < count($calls); $i++) { ?>
                         <tr>
-                            <th scope="row"><?= $i + 1 ?></th>
+                            <?php if (isset($_GET['page']) && isset($perPage)) {
+                                $row = $i + 1 + (($_GET['page'] - 1) * $perPage);
+                            } else {
+                                $row = $i + 1;
+                            }
+                            ?>
+                            <th scope="row"><?= $row ?></th>
                             <td><?= $calls[$i]['user'] ?></td>
                             <td><?= $calls[$i]['dialed_user'] ?></td>
                             <td><?= $calls[$i]['call_start_time'] ?></td>

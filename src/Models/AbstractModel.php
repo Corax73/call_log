@@ -84,12 +84,16 @@ abstract class AbstractModel
         return $resp ? $resp : [];
     }
 
+    /**
+     * Returns the number of model records.
+     * @return int
+     */
     public function getTotal(): int
     {
         $query = 'SELECT COUNT(*) FROM `' . $this->table . '`';
         $stmt = $this->connect->connect(PATH_CONF)->prepare($query);
         $stmt->execute();
-        $countNum = $stmt->fetchColumn();
+        $countNum = intval($stmt->fetchColumn());
         return $countNum;
     }
 }

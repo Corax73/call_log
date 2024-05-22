@@ -7,30 +7,30 @@ use PDO;
 /**
  * @property string $table
  */
-class UserStatements extends AbstractModel
+class NumberOperators extends AbstractModel
 {
-    protected string $table = 'user-statements';
+    protected string $table = 'number_operators';
     protected array $fillable = [
-        'user_id',
+        'number_id',
         'operator_id'
     ];
     protected array $guarded = [];
 
     /**
-     * Save relationship between users and operators.
-     * @param int $user_id
+     * Save relationship between numbers and operators.
+     * @param int $number_id
      * @param int $operator_id
      * @return bool
      */
-    public function save(int $user_id, int $operator_id): bool
+    public function save(int $number_id, int $operator_id): bool
     {
         $resp = false;
         $strFields = implode(', ', $this->fillable);
         if ($strFields) {
             try {
-                $query = 'INSERT INTO `' . $this->table . '` (' . $strFields . ', created_at) VALUES (:user_id, :operator_id, :now)';
+                $query = 'INSERT INTO `' . $this->table . '` (' . $strFields . ', created_at) VALUES (:number_id, :operator_id, :now)';
                 $params = [
-                    ':user_id' => $user_id,
+                    ':number_id' => $number_id,
                     ':operator_id' => $operator_id,
                     ':now' => date('Y-m-d h:i:s', time())
                 ];
@@ -48,16 +48,21 @@ class UserStatements extends AbstractModel
         return $resp;
     }
 
-    public function getDataByUserIds(int|array $user_id): array | bool
+    /**
+     * Returns model data by identifier or array of identifiers.
+     * @param int|array<int, int> $number_id
+     * @return array<string, string|int>
+     */
+    public function getDataByNumberIds(int|array $number_id): array | bool
     {
-        if (is_array($user_id)) {
-            $params = $user_id;
-            $placeholders = str_repeat('?, ',  count($user_id) - 1) . '?';
-            $query = "SELECT id, " . implode(', ', array_diff($this->fillable, $this->guarded)) . ",created_at FROM `$this->table` WHERE `user_id` IN ($placeholders)";
+        if (is_array($number_id)) {
+            $params = $number_id;
+            $placeholders = str_repeat('?, ',  count($number_id) - 1) . '?';
+            $query = "SELECT id, " . implode(', ', array_diff($this->fillable, $this->guarded)) . ",created_at FROM `$this->table` WHERE `number_id` IN ($placeholders)";
         } else {
-            $query = 'SELECT id, ' . implode(', ', array_diff($this->fillable, $this->guarded)) . ',created_at FROM `' . $this->table . '` WHERE `user_id` = :user_id';
+            $query = 'SELECT id, ' . implode(', ', array_diff($this->fillable, $this->guarded)) . ',created_at FROM `' . $this->table . '` WHERE `number_id` = :number_id';
             $params = [
-                ':user_id' => $user_id
+                ':number_id' => $number_id
             ];
         }
         $query .= ' ORDER BY `id` DESC';

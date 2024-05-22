@@ -9,8 +9,8 @@ class Call extends AbstractModel
 {
     protected string $table = 'calls';
     protected array $fillable = [
-        'user_id',
-        'dialed_user_id',
+        'phone_id',
+        'dialed_phone_id',
         'call_start_time',
         'call_end_time'
     ];
@@ -18,22 +18,22 @@ class Call extends AbstractModel
 
     /**
      * Save call data.
-     * @param int $user_id
-     * @param int $dialed_user_id
+     * @param int $phone_id
+     * @param int $dialed_phone_id
      * @param string $call_start_time
      * @param string $call_end_time
      * @return bool
      */
-    public function save(int $user_id, int $dialed_user_id, string $call_start_time, string $call_end_time): bool
+    public function save(int $phone_id, int $dialed_phone_id, string $call_start_time, string $call_end_time): bool
     {
         $resp = false;
         $strFields = implode(', ', $this->fillable);
         if ($strFields) {
             try {
-                $query = 'INSERT INTO `' . $this->table . '` (' . $strFields . ', created_at) VALUES (:user_id, :dialed_user_id, :call_start_time, :call_end_time, :now)';
+                $query = 'INSERT INTO `' . $this->table . '` (' . $strFields . ', created_at) VALUES (:phone_id, :dialed_phone_id, :call_start_time, :call_end_time, :now)';
                 $params = [
-                    ':user_id' => $user_id,
-                    ':dialed_user_id' => $dialed_user_id,
+                    ':phone_id' => $phone_id,
+                    ':dialed_phone_id' => $dialed_phone_id,
                     ':call_start_time' => $call_start_time,
                     ':call_end_time' => $call_end_time,
                     ':now' => date('Y-m-d h:i:s', time())
