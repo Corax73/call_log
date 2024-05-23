@@ -5,9 +5,10 @@ namespace Repositories;
 use DateTime;
 use Illuminate\Support\Collection;
 use Models\Call;
+use Models\NumberOperators;
 use Models\Operator;
+use Models\PhoneNumber;
 use Models\User;
-use Models\UserStatements;
 
 class CallsRepository
 {
@@ -15,41 +16,47 @@ class CallsRepository
     {
         $calls = $this->getCallsFromDb($perPage, $offset);
 
-        $allUsersFromCall = $this->getUsersFromCalls($calls);
-        $users = $allUsersFromCall['users'];
-        $dialedUsers = $allUsersFromCall['dialedUsers'];
+        $allPhonesFromCall = $this->getPhonesFromCalls($calls);
+        $phones = $allPhonesFromCall['phones'];
+        $dialedPhones = $allPhonesFromCall['dialedPhones'];
 
-        $userStatementsData = $this->getOperatorsWithListOfUsers($allUsersFromCall);
-        $operatorsData = $this->getOperatorsDataWithPrices($userStatementsData);
+        $numberOperatorsData = $this->getOperatorsWithListOfNumbers($allPhonesFromCall);
+        $operatorsData = $this->getOperatorsDataWithPrices($numberOperatorsData);
 
-        $calls = $calls->map(function ($item) use ($users, $dialedUsers, $operatorsData) {
-            $user = $users->where('id', $item['user_id']);
-            if ($user) {
-                $item['user'] = $user->first()['email'];
+        $calls = $calls->map(function ($item) use ($phones, $dialedPhones, $operatorsData) {
+            $phone = $phones->where('id', $item['phone_id']);
+            if ($phone) {
+                $item['user'] = $phone->first()['user_id'];
             }
 
-            $dialedUser = $dialedUsers->where('id', $item['dialed_user_id']);
-            if ($dialedUser) {
-                $item['dialed_user'] = $dialedUser->first()['email'];
+            $dialedPhone = $dialedPhones->where('id', $item['dialed_phone_id']);
+            if ($dialedPhone) {
+                $item['dialed_user'] = $dialedPhone->first()['user_id'];
             }
 
             $startTime = new DateTime($item['call_start_time']);
             $endTime = new DateTime($item['call_end_time']);
             $item['duration'] = $endTime->getTimestamp() - $startTime->getTimestamp();
 
-            $userOperator = $operatorsData->filter(function ($operator) use ($item) {
-                return in_array($item['user_id'], $operator['users']);
+            $numberOperator = $operatorsData->filter(function ($operator) use ($item) {
+                return in_array($item['phone_id'], $operator['numbers']);
             });
             $dialedOperator = $operatorsData->filter(function ($operator) use ($item) {
-                return in_array($item['dialed_user_id'], $operator['users']);
+                return in_array($item['dialed_phone_id'], $operator['numbers']);
             });
-            if ($userOperator->isNotEmpty() && $dialedOperator->isNotEmpty()) {
-                if ($userOperator->first()['operator_id'] == $dialedOperator->first()['operator_id']) {
-                    $item['call_cost'] = $item['duration'] * $userOperator->first()['prices']['internal_price'];
+            if ($numberOperator->isNotEmpty() && $dialedOperator->isNotEmpty()) {
+                if ($numberOperator->first()['operator_id'] == $dialedOperator->first()['operator_id']) {
+                    $item['call_cost'] = $item['duration'] * $numberOperator->first()['prices']['internal_price'];
                 } else {
-                    $item['call_cost'] = ceil($item['duration'] / 60) * $userOperator->first()['prices']['external_price'];
+                    $item['call_cost'] = ceil($item['duration'] / 60) * $numberOperator->first()['prices']['external_price'];
                 }
             }
+            return $item;
+        });
+        $users = $this->getUsersFromCalls($calls);
+        $calls = $calls->map(function ($item) use ($users) {
+            $item['user'] = $users['users']->where('id', $item['user'])->first()['email'];
+            $item['dialed_user'] = $users['dialedUsers']->where('id', $item['dialed_user'])->first()['email'];
             return $item;
         });
         return $calls;
@@ -71,36 +78,50 @@ class CallsRepository
         ];
     }
 
+    private function getPhonesFromCalls(Collection $calls): array
+    {
+        $phonesIds = $calls->pluck('phone_id')->toArray();
+        $dialedPhonesIds = $calls->pluck('dialed_phone_id')->toArray();
+
+        $phone = new PhoneNumber();
+        $users = collect($phone->find($phonesIds));
+        $dialedPhones = collect($phone->find($dialedPhonesIds));
+        return [
+            'phones' => $users,
+            'dialedPhones' => $dialedPhones
+        ];
+    }
+
     private function getUsersFromCalls(Collection $calls): array
     {
-        $userIds = $calls->pluck('user_id')->toArray();
-        $dialedUserIds = $calls->pluck('dialed_user_id')->toArray();
+        $usersIds = $calls->pluck('user')->toArray();
+        $dialedUsersIds = $calls->pluck('dialed_user')->toArray();
 
         $user = new User();
-        $users = collect($user->find($userIds));
-        $dialedUsers = collect($user->find($dialedUserIds));
+        $users = collect($user->find($usersIds));
+        $dialedUsers = collect($user->find($dialedUsersIds));
         return [
             'users' => $users,
             'dialedUsers' => $dialedUsers
         ];
     }
 
-    private function getOperatorsWithListOfUsers(array $users): Collection
+    private function getOperatorsWithListOfNumbers(array $phones): Collection
     {
-        $userIds = $users['users']->pluck('id')->toArray();
-        $dialedUserIds = $users['dialedUsers']->pluck('id')->toArray();
-        $userStatements = new UserStatements();
-        return collect($userStatements->getDataByUserIds(array_merge($userIds, $dialedUserIds)));
+        $phonesIds = $phones['phones']->pluck('id')->toArray();
+        $dialedPhonesIds = $phones['dialedPhones']->pluck('id')->toArray();
+        $numberOperators = new NumberOperators();
+        return collect($numberOperators->getDataByNumberIds(array_merge($phonesIds, $dialedPhonesIds)));
     }
 
-    private function getOperatorsDataWithPrices(Collection $userStatementsData)
+    private function getOperatorsDataWithPrices(Collection $numberOperatorsData)
     {
-        $groupedData = $userStatementsData->groupBy('operator_id')->map(function ($item) {
-            return ['users' => collect($item)->pluck('user_id')->toArray()];
+        $groupedData = $numberOperatorsData->groupBy('operator_id')->map(function ($item) {
+            return ['numbers' => collect($item)->pluck('number_id')->toArray()];
         })->toArray();
 
         $operator = new Operator();
-        $operatorsDataWithPrices = collect($operator->find($userStatementsData->pluck('operator_id')->toArray()));
+        $operatorsDataWithPrices = collect($operator->find($numberOperatorsData->pluck('operator_id')->toArray()));
 
         $operatorsData = [];
         foreach ($groupedData as $operatorId => $data) {
