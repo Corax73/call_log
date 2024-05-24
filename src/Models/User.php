@@ -87,7 +87,7 @@ class User extends AbstractModel
         session_unset();
         session_destroy();
         unset($_SESSION['email']);
-        header("Location: http://localhost:8000");
+        header("Location: /");
         exit();
     }
 }

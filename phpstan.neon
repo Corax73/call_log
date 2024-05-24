@@ -1,6 +1,7 @@
 parameters:
-    level: 9
+    level: 8
     paths:
         - src/Models
+        - src/Repositories
     bootstrapFiles:
         - config/const.php

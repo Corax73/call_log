@@ -12,6 +12,12 @@ use Models\User;
 
 class CallsRepository
 {
+    /**
+     * Collects and calculates data for distribution to the front.
+     * @param int $perPage
+     * @param int $offset
+     * @return Collection<string, string>
+     */
     public function getCallWithCalculatedData(int $perPage = 12, int $offset = 0): Collection
     {
         $calls = $this->getCallsFromDb($perPage, $offset);
@@ -62,12 +68,22 @@ class CallsRepository
         return $calls;
     }
 
+    /**
+     * Receives call data from the model.
+     * @param int $perPage
+     * @param int $offset
+     * @return Collection<string, mixed>
+     */
     private function getCallsFromDb(int $perPage = 12, int $offset = 0): Collection
     {
         $call = new Call();
         return collect($call->all($perPage, $offset));
     }
 
+    /**
+     * Gets the number of calls from the model and returns an array of data for pagination.
+     * @return array<string, float|int>
+     */
     public function getPagination(): array
     {
         $call = new Call();
@@ -78,6 +94,11 @@ class CallsRepository
         ];
     }
 
+    /**
+     * Receives number IDs from the call collection and uses them to obtain data from the model.
+     * @param Collection<string, mixed> $calls
+     * @return array<string, Collection<string, mixed>>
+     */
     private function getPhonesFromCalls(Collection $calls): array
     {
         $phonesIds = $calls->pluck('phone_id')->toArray();
@@ -92,6 +113,11 @@ class CallsRepository
         ];
     }
 
+    /**
+     * Receives user IDs from the call collection and uses them to obtain data from the model.
+     * @param Collection<string, mixed> $calls
+     * @return array<string, Collection<string, mixed>>
+     */
     private function getUsersFromCalls(Collection $calls): array
     {
         $usersIds = $calls->pluck('user')->toArray();
@@ -106,6 +132,11 @@ class CallsRepository
         ];
     }
 
+    /**
+     * Receives the IDs of operators associated with phones from an array of collections of numbers and receives data from the model using them.
+     * @param array<string, Collection<string, mixed>> $phones
+     * @return Collection<string, mixed>
+     */
     private function getOperatorsWithListOfNumbers(array $phones): Collection
     {
         $phonesIds = $phones['phones']->pluck('id')->toArray();
@@ -114,7 +145,12 @@ class CallsRepository
         return collect($numberOperators->getDataByNumberIds(array_merge($phonesIds, $dialedPhonesIds)));
     }
 
-    private function getOperatorsDataWithPrices(Collection $numberOperatorsData)
+    /**
+     * Receives operator identifiers from a collection of numbers with operator data and uses them to obtain data from the model.
+     * @param Collection<string, mixed> $numberOperatorsData
+     * @return Collection<string, mixed>
+     */
+    private function getOperatorsDataWithPrices(Collection $numberOperatorsData): Collection
     {
         $groupedData = $numberOperatorsData->groupBy('operator_id')->map(function ($item) {
             return ['numbers' => collect($item)->pluck('number_id')->toArray()];

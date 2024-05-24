@@ -49,7 +49,7 @@ class PhoneNumber extends AbstractModel
     }
 
     /**
-     * Returns model data by identifier or array of identifiers.
+     * Returns model data by identifier or array of IDs.
      * @param int|array<int, int> $user_id
      * @return array<string, string|int>
      */
