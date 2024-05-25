@@ -2,7 +2,8 @@
     "autoload": {
         "psr-4": {
             "Models\\": "src/Models/",
-            "Repositories\\": "src/Repositories"
+            "Repositories\\": "src/Repositories",
+            "Controllers\\": "src/Controllers"
         }
     },
     "authors": [

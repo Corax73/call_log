@@ -40,7 +40,7 @@ abstract class AbstractModel
 
     /**
      * Searches by model ID. Returns an array with data or false.
-     * @param int|array $id
+     * @param int|array<int, int> $id
      * @return array<string, mixed> | bool
      */
     public function find(int|array $id): array | bool

@@ -50,7 +50,7 @@ class NumberOperators extends AbstractModel
 
     /**
      * Returns model data by identifier or array of IDs.
-     * @param int|array $number_id
+     * @param int|array<int, int> $number_id
      * @return array<string, string|int>
      */
     public function getDataByNumberIds(int|array $number_id): array | bool

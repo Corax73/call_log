@@ -1,5 +1,6 @@
 <?php
 
+use Controllers\AuthController;
 use Models\User;
 use Repositories\CallsRepository;
 
@@ -19,7 +20,7 @@ if (isset($_GET['page']) && $_GET['page'] <= $countPages) {
 }
 $calls = $callsRepository->getCallWithCalculatedData($perPage, $offset);
 
-if ((isset($_POST['email']) && isset($_POST['passwordForLogin'])) && ($_POST['email'] && $_POST['passwordForLogin'])) {
+/*if ((isset($_POST['email']) && isset($_POST['passwordForLogin'])) && ($_POST['email'] && $_POST['passwordForLogin'])) {
     $user = new User();
     $auth = $user->authUser($_POST['email'], $_POST['passwordForLogin']);
     if ($auth) {
@@ -30,4 +31,4 @@ if ((isset($_POST['email']) && isset($_POST['passwordForLogin'])) && ($_POST['em
 if (isset($_POST['logout']) && $_POST['logout']) {
     $user = new User();
     $user->logout();
-}
+}*/
