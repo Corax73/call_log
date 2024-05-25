@@ -7,6 +7,9 @@ namespace Models;
  */
 class Operator extends AbstractModel
 {
+    readonly string $title;
+    readonly int $internal_price;
+    readonly int $external_price;
     protected string $table = 'operators';
     protected array $fillable = [
         'title',
@@ -47,5 +50,12 @@ class Operator extends AbstractModel
             }
         }
         return $resp;
+    }
+
+    public function fill(array $data)
+    {
+        $this->title = $data['title'];
+        $this->internal_price = $data['internal_price'];
+        $this->external_price = $data['external_price'];
     }
 }
