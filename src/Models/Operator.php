@@ -52,10 +52,26 @@ class Operator extends AbstractModel
         return $resp;
     }
 
-    public function fill(array $data)
+    public function fill(array $data): bool
     {
-        $this->title = $data['title'];
-        $this->internal_price = $data['internal_price'];
-        $this->external_price = $data['external_price'];
+        $resp = false;
+        if (isset($data['title']) && isset($data['internal_price']) && isset($data['external_price'])) {
+            if ($data['title'] && intval($data['internal_price']) >= 0 && intval($data['external_price']) >= 0) {
+                $this->title = trim($data['title']);
+                $this->internal_price = intval(trim($data['internal_price']));
+                $this->external_price = intval(trim($data['external_price']));
+                $resp = true;
+            }
+        }
+        return $resp;
+    }
+
+    public function saveByFill(): bool
+    {
+        $resp = false;
+        if (!empty($this->title) && $this->internal_price && $this->external_price) {
+            $resp = $this->save($this->title, $this->internal_price, $this->external_price);
+        }
+        return $resp;
     }
 }

@@ -5,9 +5,15 @@ use Controllers\FormController;
 require '../../vendor/autoload.php';
 require '../../src/layouts/header.php';
 require '../../src/layouts/navbar.php';
+include '../../config/const.php';
 if (!isset($_SESSION['email']) && $_SESSION['email'] !== 'admin@admin.com') {
     header('Location: /');
 }
 
 $formController = new FormController();
-$formController->checkPost();
+$result = $formController->checkPost();
+if(isset($result['errors'])) {
+    $errors['errors'] = $result['errors'];
+} elseif(isset($result['result']) && $result['result']) {
+    $saved = true;
+}

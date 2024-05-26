@@ -10,13 +10,17 @@ class FormController
     /**
      * @return void
      */
-    public function checkPost(): void
+    public function checkPost(): array
     {
+        $res = false;
+        $errors = ['errors' => 'something'];
         if (isset($_POST['entity']) && !empty($_POST['entity'])) {
             if ($this->checkEntityExist($_POST['entity'])) {
-                $this->requestExecute();
+                $res = $this->requestExecute();
             }
         }
+
+        return $res ? ['result' => true] : $errors;
     }
 
     /**
@@ -34,8 +38,9 @@ class FormController
         return $resp;
     }
 
-    private function requestExecute()
+    private function requestExecute(): bool
     {
+        $resp = false;
         $className = 'Models\\' . ucfirst($_POST['entity']);
         $entity = new $className();
         $data = [];
@@ -44,7 +49,10 @@ class FormController
                 $data[$key] = $value;
             }
         }
-        $entity->fill($data);
-        dump($entity);
+        $filled = $entity->fill($data);
+        if($filled) {
+            $resp = $entity->saveByFill();
+        }
+        return $resp;
     }
 }
