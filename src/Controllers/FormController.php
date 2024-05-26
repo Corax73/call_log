@@ -8,19 +8,24 @@ namespace Controllers;
 class FormController
 {
     /**
-     * @return void
+     * Checks post parameters, causes request processing.
+     * @return array<string, mixed>
      */
     public function checkPost(): array
     {
-        $res = false;
-        $errors = ['errors' => 'something'];
+        $resp = [];
         if (isset($_POST['entity']) && !empty($_POST['entity'])) {
             if ($this->checkEntityExist($_POST['entity'])) {
-                $res = $this->requestExecute();
+                if ($this->requestExecute()) {
+                    $resp = ['result' => true];
+                } else {
+                    $resp = ['errors' => 'check the entered data'];
+                }
+            } else {
+                $resp = ['errors' => 'check the entered data'];
             }
         }
-
-        return $res ? ['result' => true] : $errors;
+        return $resp;
     }
 
     /**
@@ -38,6 +43,10 @@ class FormController
         return $resp;
     }
 
+    /**
+     * Passes the request parameters to the entity, and if it is successfully filled, saves it.
+     * @return bool
+     */
     private function requestExecute(): bool
     {
         $resp = false;
@@ -49,8 +58,11 @@ class FormController
                 $data[$key] = $value;
             }
         }
-        $filled = $entity->fill($data);
-        if($filled) {
+        $filled = false;
+        if ($data) {
+            $filled = $entity->fill($data);
+        }
+        if ($filled) {
             $resp = $entity->saveByFill();
         }
         return $resp;
