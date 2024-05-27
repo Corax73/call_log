@@ -1,6 +1,7 @@
 <?php
 
 use Controllers\FormController;
+use Models\User;
 
 require '../../vendor/autoload.php';
 require '../../src/layouts/header.php';
@@ -9,6 +10,9 @@ include '../../config/const.php';
 if (!isset($_SESSION['email']) && $_SESSION['email'] !== 'admin@admin.com') {
     header('Location: /');
 }
+
+$user = new User();
+$users = collect($user->all($user->getTotal()))->pluck('id', 'email')->toArray();
 
 $formController = new FormController();
 $result = $formController->checkPost();
