@@ -17,6 +17,7 @@ class Operator extends AbstractModel
         'external_price'
     ];
     protected array $guarded = [];
+    protected string $unique = 'title';
 
     /**
      * Save operator data.
@@ -93,9 +94,11 @@ class Operator extends AbstractModel
         $resp = [];
         if (isset($data['title']) && isset($data['internal_price']) && isset($data['external_price'])) {
             if (trim($data['title']) && intval($data['internal_price']) >= 0 && intval($data['external_price']) >= 0) {
-                $resp['title'] = trim($data['title']);
-                $resp['internal_price'] = intval(trim($data['internal_price']));
-                $resp['external_price'] = intval(trim($data['external_price']));
+                if ($this->checkUnique(trim($data['title']))) {
+                    $resp['title'] = trim($data['title']);
+                    $resp['internal_price'] = intval(trim($data['internal_price']));
+                    $resp['external_price'] = intval(trim($data['external_price']));
+                }
             }
         }
         return $resp;

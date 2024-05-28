@@ -7,9 +7,10 @@ use PDO;
 
 /**
  * @property string $table
- * @property array $fillable;
- * @property array $guarded;
+ * @property array $fillable
+ * @property array $guarded
  * @property Connect $connect
+ * @property string $unique
  */
 abstract class AbstractModel
 {
@@ -18,11 +19,12 @@ abstract class AbstractModel
      * @var array<string>
      */
     protected array $fillable;
-     /**
+    /**
      * @var array<string>
      */
     protected array $guarded;
     protected Connect $connect;
+    protected string $unique;
 
     public function __construct()
     {
@@ -95,5 +97,29 @@ abstract class AbstractModel
         $stmt->execute();
         $countNum = intval($stmt->fetchColumn());
         return $countNum;
+    }
+
+    /**
+     * If the uniqueness property is filled, it searches for the passed string or number in this column of the model table.
+     * If the property is empty or if there is an entry in the table, returns false.
+     * @param string|int $search
+     * @return bool
+     */
+    public function checkUnique(string|int $search): bool
+    {
+        $resp = false;
+        if ($this->unique) {
+            $query = 'SELECT COUNT(*) FROM `' . $this->table . '` WHERE `' . $this->unique . '` = :search';
+            $params = [
+                ':search' => $search
+            ];
+            $stmt = $this->connect->connect(PATH_CONF)->prepare($query);
+            $stmt->execute($params);
+            $countNum = intval($stmt->fetchColumn());
+            if ($countNum === 0) {
+                $resp = true;
+            }
+        }
+        return $resp;
     }
 }

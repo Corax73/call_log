@@ -14,15 +14,25 @@ class FormController
     public function checkPost(): array
     {
         $resp = [];
+        if (isset($_POST['entity'])) {
+            $errors = [
+                'errors' => [
+                    $_POST['entity'] => [
+                        'entered_data' => $_POST,
+                        'error' => 'check the entered data'
+                    ]
+                ]
+            ];
+        }
         if (isset($_POST['entity']) && !empty($_POST['entity'])) {
             if ($this->checkEntityExist($_POST['entity'])) {
                 if ($this->requestExecute()) {
-                    $resp = ['result' => true];
+                    $resp = ['result' => [$_POST['entity'] => true]];
                 } else {
-                    $resp = ['errors' => 'check the entered data'];
+                    $resp = $errors;
                 }
             } else {
-                $resp = ['errors' => 'check the entered data'];
+                $resp = $errors;
             }
         }
         return $resp;

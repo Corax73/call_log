@@ -17,6 +17,7 @@ class PhoneNumber extends AbstractModel
         'user_id'
     ];
     protected array $guarded = [];
+    protected string $unique = 'number';
 
     /**
      * Saves the number and link to the user.
@@ -114,8 +115,10 @@ class PhoneNumber extends AbstractModel
         $resp = [];
         if (isset($data['number']) && isset($data['user_id'])) {
             if (intval($data['number']) >= 0 && intval($data['user_id']) >= 0) {
-                $resp['number'] = intval(trim($data['number']));
-                $resp['user_id'] = intval(trim($data['user_id']));
+                if ($this->checkUnique(intval($data['number']))) {
+                    $resp['number'] = intval(trim($data['number']));
+                    $resp['user_id'] = intval(trim($data['user_id']));
+                }
             }
         }
         return $resp;

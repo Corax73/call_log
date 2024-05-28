@@ -17,7 +17,7 @@ $users = collect($user->all($user->getTotal()))->pluck('id', 'email')->toArray()
 $formController = new FormController();
 $result = $formController->checkPost();
 if(isset($result['errors'])) {
-    $errors['errors'] = $result['errors'];
-} elseif(isset($result['result']) && $result['result']) {
-    $saved = true;
+    $errors = $result;
+} elseif(isset($result['result']) && $result['result'][$_POST['entity']]) {
+    $saved = $result['result'];
 }
