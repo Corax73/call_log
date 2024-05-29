@@ -8,7 +8,12 @@ require_once '../../src/editing.php';
         <div class="col-xs-4 col-md-6 col-lg-6">
             <h3 class="panel-title">Creating an operator</h3>
         </div>
-        <form method="POST">
+        <div class="col">
+            <button class="btn btn-primary" id="operatorBtn">
+                Operator creation form.
+            </button>
+        </div>
+        <form method="POST" id="formOperator">
             <div class="form-group">
                 <input required type="hidden" name="entity" class="form-control" value="operator">
                 <label for="formGroupExampleInput">Title</label>
@@ -36,7 +41,12 @@ require_once '../../src/editing.php';
         <div class="col-xs-4 col-md-6 col-lg-6">
             <h3 class="panel-title">Creating a phone number</h3>
         </div>
-        <form method="POST">
+        <div class="col">
+            <button class="btn btn-primary" id="phoneBtn">
+                Phone number creation form.
+            </button>
+        </div>
+        <form method="POST" id="formPhone">
             <div class="form-group">
                 <input required type="hidden" name="entity" class="form-control" value="phoneNumber">
                 <label for="formGroupExampleInput">Number</label>
@@ -63,4 +73,5 @@ require_once '../../src/editing.php';
             </div>
         </form>
     </div>
+    <script type="module" src="/js/editingForm.js"></script>
 </body>

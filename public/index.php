@@ -59,7 +59,7 @@ require '../src/layouts/header.php';
         </nav>
     <?php } ?>
     </div>
-    <script src=" /js/form.js"></script>
+    <script type="module" src="/js/loginForm.js"></script>
 </body>
 
 </html>
