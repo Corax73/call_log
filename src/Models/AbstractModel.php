@@ -122,4 +122,26 @@ abstract class AbstractModel
         }
         return $resp;
     }
+
+    protected abstract function validate(array $data): array;
+
+    /**
+     * Receives an array to fill the properties, calls the validation method, and if successful, fills the model.
+     * @param array <string, mixed> $data
+     * @return bool
+     */
+    public function fill(array $data): bool
+    {
+        $resp = false;
+        $validDate = $this->validate($data);
+        if ($validDate) {
+            if ($this->checkUnique(trim($data[$this->unique]))) {
+                foreach ($this->fillable as $prop) {
+                    $this->$prop = $validDate[$prop];
+                }
+                $resp = true;
+            }
+        }
+        return $resp;
+    }
 }

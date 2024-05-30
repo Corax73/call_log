@@ -76,23 +76,6 @@ class PhoneNumber extends AbstractModel
     }
 
     /**
-     * Receives an array to fill the properties, calls the validation method, and if successful, fills the model.
-     * @param array <string, mixed> $data
-     * @return bool
-     */
-    public function fill(array $data): bool
-    {
-        $resp = false;
-        $validDate = $this->validate($data);
-        if ($validDate) {
-            $this->number = $validDate['number'];
-            $this->user_id = $validDate['user_id'];
-            $resp = true;
-        }
-        return $resp;
-    }
-
-    /**
      * Calls the save method if the instance properties are filled.
      * @return bool
      */
@@ -110,7 +93,7 @@ class PhoneNumber extends AbstractModel
      * @param array<string, mixed> $data
      * @return array<string, mixed>
      */
-    private function validate(array $data): array
+    protected function validate(array $data): array
     {
         $resp = [];
         if (isset($data['number']) && isset($data['user_id'])) {

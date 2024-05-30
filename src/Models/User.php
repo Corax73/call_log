@@ -90,4 +90,12 @@ class User extends AbstractModel
         header("Location: /");
         exit();
     }
+
+    /**
+     * stub
+     */
+    protected function validate(array $data): array
+    {
+        return [];
+    }
 }

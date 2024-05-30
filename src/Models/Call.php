@@ -51,4 +51,12 @@ class Call extends AbstractModel
         }
         return $resp;
     }
+
+    /**
+     * stub
+     */
+    protected function validate(array $data): array
+    {
+        return [];
+    }
 }

@@ -71,4 +71,12 @@ class NumberOperators extends AbstractModel
         $resp = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $resp ? $resp : false;
     }
+
+    /**
+     * stub
+     */
+    protected function validate(array $data): array
+    {
+        return [];
+    }
 }
