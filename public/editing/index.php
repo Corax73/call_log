@@ -4,10 +4,10 @@ require_once '../../src/editing.php';
 ?>
 
 <body>
-    <div class="row">
-        <div class="col-xs-4 col-md-6 col-lg-6">
-            <h3 class="panel-title">Creating an operator</h3>
-        </div>
+    <div class="col-xs-4 col-md-6 col-lg-6">
+        <h3 class="panel-title">Creating an operator</h3>
+    </div>
+    <div class="row row-cols-auto">
         <div class="col">
             <button class="btn btn-primary" id="operatorBtn">
                 Operator creation form.
@@ -37,10 +37,10 @@ require_once '../../src/editing.php';
             </div>
         </form>
     </div>
-    <div class="row">
-        <div class="col-xs-4 col-md-6 col-lg-6">
-            <h3 class="panel-title">Creating a phone number</h3>
-        </div>
+    <div class="col-xs-4 col-md-6 col-lg-6">
+        <h3 class="panel-title">Creating a phone number</h3>
+    </div>
+    <div class="row row-cols-auto">
         <div class="col">
             <button class="btn btn-primary" id="phoneBtn">
                 Phone number creation form.
@@ -70,6 +70,49 @@ require_once '../../src/editing.php';
                 </div><?php } ?>
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Create phone number</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-xs-4 col-md-6 col-lg-6">
+        <h3 class="panel-title">Creating a number binding to an operator</h3>
+    </div>
+    <div class="row row-cols-auto">
+        <div class="col">
+            <button class="btn btn-primary" id="numberOperatorBtn">
+                Binding form.
+            </button>
+        </div>
+        <form method="POST" id="formNumberOperator">
+            <div class="form-group">
+                <input required type="hidden" name="entity" class="form-control" value="numberOperators">
+                <label for="formGroupExampleInput">Operator</label>
+                <select name="operator_id" class="form-select" aria-label="Default select example" required>
+                    <option selected>Open this select menu</option>
+                    <?php if (isset($operators) && count($operators) > 0) { ?>
+                        <?php foreach ($operators as $title => $id) { ?>
+                            <option value="<?= $id ?>" <?php if (isset($errors['errors']['numberOperators']['entered_data']['operator_id']) && $errors['errors']['numberOperators']['entered_data']['operator_id'] == $id) print 'selected' ?>><?= $title ?></option>
+                        <?php } ?>
+                    <?php } ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="formGroupExampleInput">Phone number</label>
+                <select name="number_id" class="form-select" aria-label="Default select example" required>
+                    <option selected>Open this select menu</option>
+                    <?php if (isset($phoneNumbers) && count($phoneNumbers) > 0) { ?>
+                        <?php foreach ($phoneNumbers as $number => $id) { ?>
+                            <option value="<?= $id ?>" <?php if (isset($errors['errors']['numberOperators']['entered_data']['number_id']) && $errors['errors']['numberOperators']['entered_data']['number_id'] == $id) print 'selected' ?>><?= $number ?></option>
+                        <?php } ?>
+                    <?php } ?>
+                </select>
+            </div>
+            <?php if (isset($errors['errors']['numberOperators'])) { ?><span class="text-danger"><?= $errors['errors']['numberOperators']['error']; ?></span><?php } ?>
+            <?php if (isset($saved['numberOperators']) && $saved['numberOperators']) { ?>
+                <div class="alert alert-success" role="alert">
+                    Binding saved!
+                </div><?php } ?>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Create binding</button>
             </div>
         </form>
     </div>

@@ -1,6 +1,8 @@
 <?php
 
 use Controllers\FormController;
+use Models\Operator;
+use Models\PhoneNumber;
 use Models\User;
 
 require '../../vendor/autoload.php';
@@ -13,6 +15,12 @@ if (!isset($_SESSION['email']) && $_SESSION['email'] !== 'admin@admin.com') {
 
 $user = new User();
 $users = collect($user->all($user->getTotal()))->pluck('id', 'email')->toArray();
+
+$phoneNumber = new PhoneNumber();
+$phoneNumbers = collect($phoneNumber->all($phoneNumber->getTotal()))->pluck('id', 'number')->toArray();
+
+$operator = new Operator();
+$operators = collect($operator->all($operator->getTotal()))->pluck('id', 'title')->toArray();
 
 $formController = new FormController();
 $result = $formController->checkPost();

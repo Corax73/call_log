@@ -9,12 +9,15 @@ use PDO;
  */
 class NumberOperators extends AbstractModel
 {
+    public int $number_id;
+    public int $operator_id;
     protected string $table = 'number_operators';
     protected array $fillable = [
         'number_id',
         'operator_id'
     ];
     protected array $guarded = [];
+    protected string $unique = 'number_id';
 
     /**
      * Save relationship between numbers and operators.
@@ -73,10 +76,34 @@ class NumberOperators extends AbstractModel
     }
 
     /**
-     * stub
+     * Calls the save method if the instance properties are filled.
+     * @return bool
+     */
+    public function saveByFill(): bool
+    {
+        $resp = false;
+        if ($this->number_id && $this->operator_id) {
+            $resp = $this->save($this->number_id, $this->operator_id);
+        }
+        return $resp;
+    }
+
+    /**
+     * In the incoming array checks for the presence of keys for model properties and values, and if successful, returns a data array.
+     * @param array<string, mixed> $data
+     * @return array<string, mixed>
      */
     protected function validate(array $data): array
     {
-        return [];
+        $resp = [];
+        if (isset($data['number_id']) && isset($data['operator_id'])) {
+            if (intval($data['number_id']) >= 0 && intval($data['operator_id']) >= 0) {
+                if ($this->checkUnique(trim($data['number_id']))) {
+                    $resp['number_id'] = intval(trim($data['number_id']));
+                    $resp['operator_id'] = intval(trim($data['operator_id']));
+                }
+            }
+        }
+        return $resp;
     }
 }
