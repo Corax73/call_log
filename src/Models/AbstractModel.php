@@ -123,6 +123,10 @@ abstract class AbstractModel
         return $resp;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @return array<string, mixed>
+     */
     protected abstract function validate(array $data): array;
 
     /**

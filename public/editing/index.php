@@ -116,5 +116,41 @@ require_once '../../src/editing.php';
             </div>
         </form>
     </div>
+    <div class="col-xs-4 col-md-6 col-lg-6">
+        <h3 class="panel-title">User number editing form</h3>
+    </div>
+    <div class="row row-cols-auto">
+        <div class="col">
+            <button class="btn btn-primary" id="usersNumbersBtn">
+                Editing form.
+            </button>
+        </div>
+        <form method="POST" id="formUsersNumbers">
+            <div class="form-group">
+                <input required type="hidden" name="entity" class="form-control" value="phoneNumber">
+                <label for="formGroupExampleInput">Users</label>
+                <select name="user_id" class="form-select" aria-label="Default select example" required>
+                    <option selected>Open this select menu</option>
+                    <?php if (isset($usersWithPhoneNumbers) && count($usersWithPhoneNumbers) > 0) { ?>
+                        <?php foreach ($usersWithPhoneNumbers as $user) { ?>
+                            <option value="<?= $user['id'] ?>" <?php if (isset($errors['errors']['phoneNumber']['entered_data']['user_id']) && $errors['errors']['phoneNumber']['entered_data']['user_id'] == $id) print 'selected' ?>><?= $user['email'] ?></option>
+                        <?php } ?>
+                    <?php } ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="formGroupExampleInput">Users phone number</label>
+                <input required type="number" name="number" class="form-control" id="formGroupExampleInput1" placeholder="" value="<?php if (isset($errors['errors']['formUsersNumbers']['entered_data']['number'])) print $errors['errors']['formUsersNumbers']['entered_data']['number'] ?>">
+            </div>
+            <?php if (isset($errors['errors']['formUsersNumbers'])) { ?><span class="text-danger"><?= $errors['errors']['formUsersNumbers']['error']; ?></span><?php } ?>
+            <?php if (isset($saved['formUsersNumbers']) && $saved['formUsersNumbers']) { ?>
+                <div class="alert alert-success" role="alert">
+                    User's phone number changed successfully!
+                </div><?php } ?>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Create binding</button>
+            </div>
+        </form>
+    </div>
     <script type="module" src="/js/editingForm.js"></script>
 </body>
