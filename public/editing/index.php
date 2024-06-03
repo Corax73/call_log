@@ -2,6 +2,9 @@
 
 require_once '../../src/editing.php';
 ?>
+<script>
+    let allPhoneNumbers = '<?= json_encode($allPhoneNumbers) ?>';
+</script>
 
 <body>
     <div class="col-xs-4 col-md-6 col-lg-6">
@@ -129,7 +132,7 @@ require_once '../../src/editing.php';
             <div class="form-group">
                 <input required type="hidden" name="entity" class="form-control" value="phoneNumber">
                 <label for="formGroupExampleInput">Users</label>
-                <select name="user_id" class="form-select" aria-label="Default select example" required>
+                <select name="user_id" id="selectUser" class="form-select" aria-label="Default select example" required>
                     <option selected>Open this select menu</option>
                     <?php if (isset($usersWithPhoneNumbers) && count($usersWithPhoneNumbers) > 0) { ?>
                         <?php foreach ($usersWithPhoneNumbers as $user) { ?>
@@ -140,7 +143,7 @@ require_once '../../src/editing.php';
             </div>
             <div class="form-group">
                 <label for="formGroupExampleInput">Users phone number</label>
-                <input required type="number" name="number" class="form-control" id="formGroupExampleInput1" placeholder="" value="<?php if (isset($errors['errors']['formUsersNumbers']['entered_data']['number'])) print $errors['errors']['formUsersNumbers']['entered_data']['number'] ?>">
+                <input required type="number" name="number" class="form-control" id="userPhone" placeholder="" value="<?php if (isset($errors['errors']['formUsersNumbers']['entered_data']['number'])) print $errors['errors']['formUsersNumbers']['entered_data']['number'] ?>">
             </div>
             <?php if (isset($errors['errors']['formUsersNumbers'])) { ?><span class="text-danger"><?= $errors['errors']['formUsersNumbers']['error']; ?></span><?php } ?>
             <?php if (isset($saved['formUsersNumbers']) && $saved['formUsersNumbers']) { ?>
@@ -153,4 +156,5 @@ require_once '../../src/editing.php';
         </form>
     </div>
     <script type="module" src="/js/editingForm.js"></script>
+    <script type="text/javascript" src="/js/selectHandler.js"></script>
 </body>
