@@ -106,4 +106,32 @@ class PhoneNumber extends AbstractModel
         }
         return $resp;
     }
+
+    /**
+     * Updates a record, search by user id.
+     * @return bool
+     */
+    public function update(): bool
+    {
+        $resp = false;
+        if ($this->number > 0 && $this->user_id > 0) {
+            try {
+                $query = 'UPDATE `' . $this->table . '` SET `number` = :number WHERE `user_id` = :user_id';
+                $params = [
+                    ':number' => $this->number,
+                    ':user_id' => $this->user_id
+                ];
+                $stmt = $this->connect->connect(PATH_CONF)->prepare($query);
+                $this->connect->connect(PATH_CONF)->beginTransaction();
+                $resp = $stmt->execute($params);
+                $this->connect->connect(PATH_CONF)->commit();
+            } catch (\Exception $e) {
+                if ($this->connect->connect(PATH_CONF)->inTransaction()) {
+                    $this->connect->connect(PATH_CONF)->rollback();
+                }
+                throw $e;
+            }
+        }
+        return $resp;
+    }
 }

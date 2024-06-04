@@ -14,10 +14,10 @@ class FormController
     public function checkPost(): array
     {
         $resp = [];
-        if (isset($_POST['entity'])) {
+        if (isset($_POST['form'])) {
             $errors = [
                 'errors' => [
-                    $_POST['entity'] => [
+                    $_POST['form'] => [
                         'entered_data' => $_POST,
                         'error' => 'check the entered data'
                     ]
@@ -27,7 +27,7 @@ class FormController
         if (isset($_POST['entity']) && !empty($_POST['entity'])) {
             if ($this->checkEntityExist($_POST['entity'])) {
                 if ($this->requestExecute()) {
-                    $resp = ['result' => [$_POST['entity'] => true]];
+                    $resp = ['result' => [$_POST['form'] => true]];
                 } else {
                     $resp = $errors;
                 }
@@ -64,7 +64,7 @@ class FormController
         $entity = new $className();
         $data = [];
         foreach ($_POST as $key => $value) {
-            if ($key != 'entity') {
+            if ($key != 'entity' && $key != 'update') {
                 $data[$key] = $value;
             }
         }
@@ -73,7 +73,11 @@ class FormController
             $filled = $entity->fill($data);
         }
         if ($filled) {
-            $resp = $entity->saveByFill();
+            if (isset($_POST['update']) && $_POST['update'] == 1) {
+                $resp = $entity->update();
+            } else {
+                $resp = $entity->saveByFill();
+            }
         }
         return $resp;
     }

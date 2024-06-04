@@ -30,6 +30,6 @@ $formController = new FormController();
 $result = $formController->checkPost();
 if(isset($result['errors'])) {
     $errors = $result;
-} elseif(isset($result['result']) && $result['result'][$_POST['entity']]) {
+} elseif(isset($result['result']) && $result['result'][$_POST['form']]) {
     $saved = $result['result'];
 }
