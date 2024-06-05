@@ -12,6 +12,9 @@ const FormNumberOperator = document.getElementById('formNumberOperator');
 const UsersNumbersBtn = document.getElementById('usersNumbersBtn');
 const FormUsersNumbers = document.getElementById('formUsersNumbers');
 
+const CallBtn = document.getElementById('callBtn');
+const FormCall = document.getElementById('formCall');
+
 const init = () => {
     if (OperatorBtn && FormOperator) {
         controlForms(OperatorBtn, FormOperator);
@@ -27,6 +30,10 @@ const init = () => {
 
     if (UsersNumbersBtn && FormUsersNumbers) {
         controlForms(UsersNumbersBtn, FormUsersNumbers);
+    }
+
+    if (CallBtn && FormCall) {
+        controlForms(CallBtn, FormCall);
     }
 }
 

@@ -8,6 +8,10 @@ namespace Models;
 class Call extends AbstractModel
 {
     protected string $table = 'calls';
+    public int $phone_id;
+    public int $dialed_phone_id;
+    public string $call_start_time;
+    public string $call_end_time;
     protected array $fillable = [
         'phone_id',
         'dialed_phone_id',
@@ -15,6 +19,7 @@ class Call extends AbstractModel
         'call_end_time'
     ];
     protected array $guarded = [];
+    protected string $unique = '';
 
     /**
      * Save call data.
@@ -53,10 +58,53 @@ class Call extends AbstractModel
     }
 
     /**
-     * stub
+     * Overridden.
+     * Receives an array to fill the properties, calls the validation method, and if successful, fills the model.
+     * @param array <string, mixed> $data
+     * @return bool
+     */
+    public function fill(array $data): bool
+    {
+        $resp = false;
+        $validDate = $this->validate($data);
+        if ($validDate) {
+            foreach ($this->fillable as $prop) {
+                $this->$prop = $validDate[$prop];
+            }
+            $resp = true;
+        }
+        return $resp;
+    }
+
+    /**
+     * Calls the save method if the instance properties are filled.
+     * @return bool
+     */
+    public function saveByFill(): bool
+    {
+        $resp = false;
+        if ($this->phone_id && $this->dialed_phone_id && $this->call_start_time && $this->call_end_time) {
+            $resp = $this->save($this->phone_id, $this->dialed_phone_id, $this->call_start_time, $this->call_end_time);
+        }
+        return $resp;
+    }
+
+    /**
+     * In the incoming array checks for the presence of keys for model properties and values, and if successful, returns a data array.
+     * @param array<string, mixed> $data
+     * @return array<string, mixed>
      */
     protected function validate(array $data): array
     {
-        return [];
+        $resp = [];
+        if (isset($data['phone_id']) && isset($data['dialed_phone_id']) && $data['call_start_time'] && $data['call_end_time']) {
+            if (intval($data['phone_id']) != intval($data['dialed_phone_id']) && strtotime($data['call_start_time']) < strtotime($data['call_end_time'])) {
+                $resp['phone_id'] = intval(trim($data['phone_id']));
+                $resp['dialed_phone_id'] = intval(trim($data['dialed_phone_id']));
+                $resp['call_start_time'] = date('Y-m-d h:i:s', strtotime($data['call_start_time']));
+                $resp['call_end_time'] = date('Y-m-d h:i:s', strtotime($data['call_end_time']));
+            }
+        }
+        return $resp;
     }
 }
