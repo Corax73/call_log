@@ -22,7 +22,7 @@ require '../src/layouts/header.php';
             </tr>
         </thead>
         <tbody>
-            <?php if ($calls) { ?>
+            <?php if (isset($calls) && $calls) { ?>
                 <?php for ($i = 0; $i < count($calls); $i++) { ?>
                     <tr>
                         <?php if (isset($_GET['page']) && isset($perPage)) {
