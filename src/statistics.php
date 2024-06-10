@@ -1,5 +1,6 @@
 <?php
 
+use Controllers\FormController;
 use Models\User;
 
 require '../../vendor/autoload.php';
@@ -13,3 +14,6 @@ if (!isset($_SESSION['email']) && $_SESSION['email'] !== 'admin@admin.com') {
 $user = new User();
 $allUsers = collect($user->all($user->getTotal()));
 $users = $allUsers->pluck('id', 'email')->toArray();
+
+$formController = new FormController();
+$statistics = $formController->getStatistics();

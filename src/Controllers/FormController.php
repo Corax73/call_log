@@ -2,6 +2,8 @@
 
 namespace Controllers;
 
+use Repositories\StatisticsRepository;
+
 /**
  * @property User $user
  */
@@ -80,5 +82,13 @@ class FormController
             }
         }
         return $resp;
+    }
+
+    public function getStatistics()
+    {
+        if(isset($_POST['user_id']) && $_POST['user_id']) {
+            $rep = new StatisticsRepository();
+            return $rep->getUserStatistics($_POST['user_id']);
+        }
     }
 }

@@ -134,4 +134,17 @@ class PhoneNumber extends AbstractModel
         }
         return $resp;
     }
+
+    public function getPhoneNumber(int $user_id): array
+    {
+        $resp = [];
+        $query = 'SELECT id, ' . implode(', ', array_diff($this->fillable, $this->guarded)) . ',created_at FROM `' . $this->table . '` WHERE `user_id` = :user_id';
+        $params = [
+            ':user_id' => $user_id
+        ];
+        $stmt = $this->connect->connect(PATH_CONF)->prepare($query);
+        $stmt->execute($params);
+        $resp = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $resp;
+    }
 }

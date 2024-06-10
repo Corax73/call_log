@@ -25,25 +25,20 @@ require_once '../../src/statistics.php';
                                 <option selected>Open this select menu</option>
                                 <?php if (isset($users) && count($users) > 0) { ?>
                                     <?php foreach ($users as $email => $id) { ?>
-                                        <option value="<?= $id ?>" <?php if (isset($errors['errors']['formPhone']['entered_data']['user_id']) && $errors['errors']['formPhone']['entered_data']['user_id'] == $id) print 'selected' ?>><?= $email ?></option>
+                                        <option value="<?= $id ?>" <?php if (isset($errors['errors']['formUsersStatistics']['entered_data']['user_id']) && $errors['errors']['formUsersStatistics']['entered_data']['user_id'] == $id) print 'selected' ?>><?= $email ?></option>
                                     <?php } ?>
                                 <?php } ?>
                             </select>
                         </div>
-                        <?php if (isset($errors['errors']['formPhone'])) { ?><span class="text-danger"><?= $errors['errors']['formPhone']['error']; ?></span><?php } ?>
-                        <?php if (isset($saved['formPhone']) && $saved['formPhone']) { ?>
-                            <div class="alert alert-success" role="alert">
-                                Phone number saved!
-                            </div><?php } ?>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">Get user statistics</button>
                         </div>
                     </form>
-                    <table class="table" id="formUsersStatistics">
+                    <?php if(isset($statistics) && $statistics) { ?>
+                    <table class="table">
                         <thead class="thead-dark">
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">User</th>
+                                <th scope="col">Quantity</th>
                                 <th scope="col">Number of outgoing calls</th>
                                 <th scope="col">Number of incoming calls</th>
                                 <th scope="col">Outgoing call time (in seconds)</th>
@@ -52,27 +47,20 @@ require_once '../../src/statistics.php';
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if (isset($calls) && $calls) { ?>
-                                <?php for ($i = 0; $i < count($calls); $i++) { ?>
+                            <?php if (isset($statistics) && $statistics) { ?>
+                                <?php for ($i = 0; $i < count($statistics); $i++) { ?>
                                     <tr>
-                                        <?php if (isset($_GET['page']) && isset($perPage)) {
-                                            $row = $i + 1 + (($_GET['page'] - 1) * $perPage);
-                                        } else {
-                                            $row = $i + 1;
-                                        }
-                                        ?>
-                                        <th scope="row"><?= $row ?></th>
-                                        <td><?= $calls[$i]['user'] ?></td>
-                                        <td><?= $calls[$i]['dialed_user'] ?></td>
-                                        <td><?= $calls[$i]['call_start_time'] ?></td>
-                                        <td><?= $calls[$i]['call_end_time'] ?></td>
-                                        <td><?= $calls[$i]['duration'] ?></td>
-                                        <td><?= $calls[$i]['call_cost'] ?></td>
+                                        <td><?= $statistics['quantity'] ?></td>
+                                        <td><?= $statistics['quantity'] ?></td>
+                                        <td><?= $statistics['quantity'] ?></td>
+                                        <td><?= $statistics['quantity'] ?></td>
+                                        <td><?= $statistics['quantity'] ?></td>
                                     </tr>
                                 <?php } ?>
                             <?php } ?>
                         </tbody>
                     </table>
+                    <?php } ?>
                 </div>
             </div>
         </div>
