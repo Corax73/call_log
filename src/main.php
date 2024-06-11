@@ -1,7 +1,5 @@
 <?php
 
-use Controllers\AuthController;
-use Models\User;
 use Repositories\CallsRepository;
 
 $callsRepository = new CallsRepository();

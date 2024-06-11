@@ -17,3 +17,4 @@ $users = $allUsers->pluck('id', 'email')->toArray();
 
 $formController = new FormController();
 $statistics = $formController->getStatistics();
+dump($statistics);

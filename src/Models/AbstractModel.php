@@ -68,19 +68,27 @@ abstract class AbstractModel
      * Returns an array of all model entries.
      * @param int $limit
      * @param int $offset
+     * @param string $filter_field
+     * @param int $filter_id
      * @return array<string, mixed>
      */
-    public function all(int $limit = 12, int $offset = 0): array
+    public function all(int $limit = 12, int $offset = 0, string $filter_field = '', int $filter_id = 0): array
     {
-        $query = 'SELECT * FROM `' . $this->table . '` ORDER BY `id` DESC LIMIT :limit';
-        if ($offset) {
-            $query .= ' OFFSET :offset';
+        if (!empty($filter_field) && $filter_id) {
+            $query = 'SELECT * FROM `' . $this->table . '` WHERE `' . $filter_field . '` = :' . $filter_field . ' ORDER BY `id` DESC LIMIT :limit';
+        } else {
+            $query = 'SELECT * FROM `' . $this->table . '` ORDER BY `id` DESC LIMIT :limit';
+            if ($offset) {
+                $query .= ' OFFSET :offset';
+            }
         }
         $stmt = $this->connect->connect(PATH_CONF)->prepare($query);
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        if ($offset) {
+        if (!empty($filter_field) && $filter_id) {
+            $stmt->bindValue(':' . $filter_field, $filter_id, PDO::PARAM_INT);
+        } elseif ($offset) {
             $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         }
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
         $resp = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $resp ? $resp : [];

@@ -16,11 +16,13 @@ class CallsRepository
      * Collects and calculates data for distribution to the front.
      * @param int $perPage
      * @param int $offset
+     * @param string $filter_field
+     * @param int $filter_id
      * @return Collection<string, string>
      */
-    public function getCallWithCalculatedData(int $perPage = 12, int $offset = 0): Collection
+    public function getCallWithCalculatedData(int $perPage = 12, int $offset = 0, string $filter_field = '', int $filter_id = 0): Collection
     {
-        $calls = $this->getCallsFromDb($perPage, $offset);
+        $calls = $this->getCallsFromDb($perPage, $offset, $filter_field, $filter_id);
 
         $allPhonesFromCall = $this->getPhonesFromCalls($calls);
         $phones = $allPhonesFromCall['phones'];
@@ -72,12 +74,14 @@ class CallsRepository
      * Receives call data from the model.
      * @param int $perPage
      * @param int $offset
+     * @param string $filter_field
+     * @param int $filter_id
      * @return Collection<string, mixed>
      */
-    private function getCallsFromDb(int $perPage = 12, int $offset = 0): Collection
+    private function getCallsFromDb(int $perPage = 12, int $offset = 0, string $filter_field = '', int $filter_id = 0): Collection
     {
         $call = new Call();
-        return collect($call->all($perPage, $offset));
+        return collect($call->all($perPage, $offset, $filter_field, $filter_id));
     }
 
     /**

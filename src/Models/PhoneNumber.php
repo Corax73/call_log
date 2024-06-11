@@ -135,6 +135,11 @@ class PhoneNumber extends AbstractModel
         return $resp;
     }
 
+    /**
+     * Returns the id of a phone number by its user id.
+     * @param int $user_id
+     * @return array<int,string>
+     */
     public function getPhoneNumber(int $user_id): array
     {
         $resp = [];
@@ -144,7 +149,10 @@ class PhoneNumber extends AbstractModel
         ];
         $stmt = $this->connect->connect(PATH_CONF)->prepare($query);
         $stmt->execute($params);
-        $resp = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if(isset($result[0])) {
+            $resp = $result[0];
+        }
         return $resp;
     }
 }
