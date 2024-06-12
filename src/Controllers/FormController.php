@@ -84,11 +84,26 @@ class FormController
         return $resp;
     }
 
-    public function getStatistics()
+    /**
+     * Returns data for statistics.
+     * @return array
+     */
+    public function getStatistics(): array
     {
-        if(isset($_POST['user_id']) && $_POST['user_id']) {
+        if (isset($_POST['user_id']) && $_POST['user_id']) {
             $rep = new StatisticsRepository();
-            return $rep->getUserStatistics($_POST['user_id']);
+            $resp = $rep->getUserStatistics($_POST['user_id']);
+            if (!$resp) {
+                $resp = [
+                    'errors' => [
+                        $_POST['form'] => [
+                            'entered_data' => $_POST,
+                            'error' => 'There is no call data for this user'
+                        ]
+                    ]
+                ];
+            }
+            return $resp;
         }
     }
 }
